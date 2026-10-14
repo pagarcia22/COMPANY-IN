@@ -1,4 +1,6 @@
+import os
 import jwt
+from dotenv import load_dotenv
 from datetime import datetime, timedelta
 from fastapi import HTTPException, Depends
 from passlib.context import CryptContext
@@ -10,7 +12,10 @@ from ..db.models import Doctor
 
 
 # Configuración de seguridad
-SECRET_KEY = "aguacielo"
+load_dotenv()
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    raise RuntimeError("Falta la variable de entorno SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60  
 

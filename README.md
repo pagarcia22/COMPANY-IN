@@ -1,85 +1,104 @@
-# Proyecto Backend - API de Gestión de Médicos
+# API de Doctores y Pacientes (FastAPI)
 
-Este es el backend para la aplicación de gestión de médicos, construida con **FastAPI**. Este proyecto maneja el registro, autenticación y gestión de médicos en una base de datos. Además, permite la protección de ciertos endpoints utilizando tokens JWT para autenticación.
+API REST en Python para registrar doctores, autenticarlos con JWT y gestionar pacientes. Al crear un paciente se puede asignar automáticamente al doctor con menos pacientes a cargo.
 
-## Tecnologías Utilizadas
-- **FastAPI**: Framework web para Python.
-![FastAPI Logo](https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png)
+## Funcionalidades
 
-- **SQLAlchemy**: ORM para interactuar con la base de datos.
-- **JWT (JSON Web Token)**: Para la autenticación de usuarios.
-- **Passlib**: Para la encriptación de contraseñas.
-- **MySQL**: Base de datos para almacenar la información.
+- Registro de doctores con contraseña cifrada (bcrypt vía Passlib).
+- Login con `cedula` y contraseña; devuelve un token JWT (HS256) que expira en 60 minutos.
+- CRUD de doctores y pacientes.
+- Asignación automática de doctor al paciente según la menor carga de pacientes.
+- Creación automática de las tablas en MySQL al iniciar la aplicación.
+- Documentación interactiva en `/docs` (Swagger UI).
 
-## Requisitos
+## Tecnologías
 
-Antes de ejecutar este proyecto, asegúrate de tener lo siguiente instalado:
+Python 3.8+ · FastAPI · SQLAlchemy · MySQL · JWT · Passlib (bcrypt) · Uvicorn
 
-- **Python 3.8+**: Puedes descargarlo desde [python.org](https://www.python.org/downloads/).
-![Python Logo](https://www.python.org/static/community_logos/python-logo.png)
+## Endpoints
 
-- **pip**: El gestor de paquetes de Python.
-- **MySQL** (o cualquier otra base de datos compatible como PostgreSQL).
-- **Git**: Para clonar el repositorio.
+| Método | Ruta | Descripción |
+|---|---|---|
+| POST | `/auth/register` | Registrar un doctor |
+| POST | `/auth/login` | Iniciar sesión y obtener token |
+| POST | `/doctors/` | Crear doctor |
+| GET | `/doctors/` | Listar doctores |
+| GET | `/doctors/{id}` | Ver un doctor |
+| DELETE | `/doctors/{id}` | Eliminar un doctor |
+| POST | `/pacientes/` | Crear paciente |
+| POST | `/pacientes/{paciente_id}/asignar` | Asignar doctor al paciente |
+| PUT | `/pacientes/{id}` | Actualizar paciente |
+| GET | `/pacientes/` | Listar pacientes |
+| GET | `/pacientes/{id}` | Ver un paciente |
+| DELETE | `/pacientes/{id}` | Eliminar un paciente |
+
+## Estructura
+
+```
+backend/app/
+├── main.py          # Aplicación FastAPI y registro de rutas
+├── api/             # Rutas: auth, doctor, paciente
+├── db/              # Conexión y modelos (Doctor, Paciente)
+├── schemas/         # Esquemas Pydantic
+└── services/        # Autenticación y asignación de doctor
+```
 
 ## Instalación
 
-### 1. Clonar el repositorio
-
-Primero, clona el repositorio desde GitHub en tu máquina local:
+1. Clona el repositorio:
 
 ```bash
-git clone 
-cd tu_repositorio_backend
+git clone https://github.com/pagarcia22/COMPANY-IN.git
+cd COMPANY-IN
 ```
 
-### 2. Crear un entorno virtual
-
-Es recomendable crear un entorno virtual para el proyecto para aislar las dependencias:
+2. Crea y activa un entorno virtual:
 
 ```bash
-Windows:
-
+# Windows
 python -m venv venv
 .\venv\Scripts\activate
-```
 
-```bash
-Linux/macOS:
-
+# Linux / macOS
 python3 -m venv venv
 source venv/bin/activate
 ```
 
-### 3.  Instalar las dependencias
-Con el entorno virtual activado, instala las dependencias del proyecto:
+3. Instala las dependencias:
 
 ```bash
 pip install -r requirements.txt
-
 ```
 
+4. Crea una base de datos en MySQL y copia `.env.example` a `.env` con tus datos:
 
-### 4. Configurar la base de datos
+```
+MYSQL_USER=tu_usuario
+MYSQL_PASSWORD=tu_contraseña
+MYSQL_HOST=localhost
+MYSQL_DB=nombre_de_tu_base
+SECRET_KEY=una_clave_larga_y_aleatoria
+```
 
-Asegúrate de tener una base de datos MySQL o cualquier base de datos compatible configurada correctamente. 
-
-### 5. Ejecutar el servidor de desarrollo
-Una vez configurado todo, puedes iniciar el servidor de desarrollo de FastAPI utilizando Uvicorn:
+5. Inicia el servidor desde la carpeta `backend`:
 
 ```bash
+cd backend
 uvicorn app.main:app --reload
 ```
 
+6. Abre `http://127.0.0.1:8000/docs` para probar la API.
 
-MIT License
+## Seguridad
 
-Copyright (c) 2025 Paola Andrea
+No subas tu archivo `.env` al repositorio. Está incluido en `.gitignore`.
 
-Se otorga permiso, de forma gratuita, a cualquier persona que obtenga una copia del software y los archivos de documentación asociados, para usar el Software sin restricciones, incluyendo, sin limitación, los derechos a usar, copiar, modificar, fusionar, publicar, distribuir, sublicenciar y/o vender copias del Software, y a permitir a las personas a quienes se les proporcione el Software hacerlo, bajo las siguientes condiciones:
+## Próximos pasos
 
-El aviso de copyright y este aviso de permiso deben incluirse en todas las copias o partes sustanciales del Software.
+- Proteger con JWT los endpoints de doctores y pacientes.
+- Agregar pruebas automáticas con pytest.
+- Agregar migraciones con Alembic.
 
+## Licencia
 
-
-
+MIT. Copyright (c) 2025 Paola Andrea Garcia Diaz.
